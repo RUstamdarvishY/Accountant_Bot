@@ -1,2 +1,4 @@
 tz.txt
 .env
+__pycache__/
+*.pyc
