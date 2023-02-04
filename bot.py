@@ -1,15 +1,18 @@
+import logging
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
-# from decouple import config
+from decouple import config
 
-# bot = Bot(token=config('BOT_TOKEN'))
-bot = Bot(token='5712273630:AAFVZ6h0sTODwbaw0FNWa0bQPS2i5hDxFBU')
+bot = Bot(token=config('BOT_TOKEN'))
 dp = Dispatcher(bot)
 
-@dp.message_handler() 
-async def echo(message: types.Message):
-    await message.answer(message.text) 
-    await message.reply(message.text) 
 
-executor.start_polling(dp, skip_updates=True) 
+async def on_startup(_):
+    print('bot is online')
+
+
+async def on_shutdown(_):
+    print('bot is offline')
+
+executor.start_polling(dp, skip_updates=True)
