@@ -1,15 +1,13 @@
 import logging
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher, FSMContext
+from aiogram import types
+from aiogram.dispatcher import FSMContext, Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from decouple import config
+from create_bot import dp
 
 
 storage = MemoryStorage()
-bot = Bot(token=config('BOT_TOKEN'))
-dp = Dispatcher(bot, storage=storage)
 
 
 class FSMAdmin(StatesGroup):
@@ -49,3 +47,12 @@ async def get_category(message: types.Message, state: FSMContext):
     await state.finish()
 
 
+def register_states_handlers(dp: Dispatcher):
+    dp.register_message_handler(
+        fsm_start, commands=['Добавить_расход'])
+    dp.register_message_handler(
+        cancel, commands=['cancel'])
+    dp.register_message_handler(
+        get_price)
+    dp.register_message_handler(
+        get_category)
