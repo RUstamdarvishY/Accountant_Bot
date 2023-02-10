@@ -3,8 +3,7 @@ from aiogram import types
 from aiogram.utils import executor
 from create_bot import dp
 from handlers import user_handlers
-from keyboards import default_keyboards, inline_keyboards
-from states import states
+from states import expenses_states
 
 
 async def on_startup(_):
@@ -12,8 +11,7 @@ async def on_startup(_):
 
 
 user_handlers.register_user_handlers(dp)
-default_keyboards.register_default_keyboards(dp)
-states.register_states_handlers(dp)
+expenses_states.register_states_handlers(dp)
 
 
 
