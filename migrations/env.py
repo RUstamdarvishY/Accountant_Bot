@@ -6,12 +6,17 @@ from sqlalchemy import pool
 from alembic import context
 
 from utils.db_api import Base 
+from decouple import config
 
 target_metadata = Base.metadata
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+section = config.config_ini_section
+config.set_section_option(section, "DB_USER", config("DB_USER"))
+config.set_section_option(section, "DB_PASS", config("DB_PASS"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
