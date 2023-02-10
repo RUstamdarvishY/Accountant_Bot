@@ -35,8 +35,8 @@ def create_user_collection():
             }
         }
     }
-    db.create_collection('student')
-    db.command('collMod', 'student', validator=user_validator)
+    db.create_collection('user')
+    db.command('collMod', 'user', validator=user_validator)
 
 
 def add_user(user_info):
@@ -49,6 +49,10 @@ def add_user(user_info):
 def add_expense(expense):
     collection = db.accountant_bot_collection
     inserted_id = collection.insert_one(expense).inserted_id
-
     print(inserted_id)
+
+
+def list_all_categories():
+    pass
+
 
