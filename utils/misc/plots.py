@@ -31,7 +31,7 @@ axis2.set_title('Расходы по категориям')
 
 plt.show()
 
-def save_image(filename):
+def save_plots(filename):
     p = PdfPages(filename)
       
     fig_nums = plt.get_fignums()  
@@ -43,4 +43,4 @@ def save_image(filename):
     p.close()  
 
 
-save_image('graphs.pdf')
+save_plots('graphs.pdf')
