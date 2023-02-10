@@ -1,11 +1,15 @@
 import logging
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext, Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+
 from handlers.user_handlers import set_all_default_commands  
 from create_bot import dp
+from keyboards import currency_kb
+
 
 
 storage = MemoryStorage()
@@ -13,6 +17,7 @@ storage = MemoryStorage()
 
 class FSMAdmin(StatesGroup):
     price = State()
+    currency = State()
     category = State()
 
 
@@ -38,6 +43,14 @@ async def get_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['price'] = message.text
     await FSMAdmin.next()
+    await message.reply('Введите валюту', reply_markup=currency_kb)
+    
+    
+@dp.message_handler(content_types=['text'], state=FSMAdmin.price)
+async def get_currency(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['currency'] = message.text
+    await FSMAdmin.next()
     await message.reply('Введите категорию расходов')
 
 
@@ -54,7 +67,6 @@ def register_states_handlers(dp: Dispatcher):
         fsm_start, commands=['Добавить_расход'])
     dp.register_message_handler(
         cancel, commands=['cancel'])
-    dp.register_message_handler(
-        get_price)
-    dp.register_message_handler(
-        get_category)
+    dp.register_message_handler(get_price)
+    dp.register_message_handler(get_currency)
+    dp.register_message_handler(get_category)
