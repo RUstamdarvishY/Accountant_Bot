@@ -4,6 +4,7 @@ from aiogram.dispatcher import FSMContext, Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from handlers.user_handlers import set_all_default_commands  
 from create_bot import dp
 
 
@@ -19,6 +20,7 @@ class FSMAdmin(StatesGroup):
 async def fsm_start(message: types.Message):
     await FSMAdmin.price.set()
     await message.reply('Введите цену')
+    await set_all_default_commands(message.bot, message.from_user.id)
 
 
 @dp.message_handler(state='*', commands=['cancel'])

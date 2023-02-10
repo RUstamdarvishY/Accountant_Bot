@@ -17,6 +17,8 @@ async def set_all_default_commands(bot):
                        'отправляет статистику в чат или на емейл'),
             BotCommand('Показать_категории_расходов',
                        'показывает существующие категории расходов'),
+            BotCommand('Добавить_расход',
+                       'Добавляет расход в существующую или новую категорию'),
         ],
         scope=BotCommandScopeDefault()
     )
@@ -24,6 +26,9 @@ async def set_all_default_commands(bot):
 
 # @dp.message_handler(commands=['start'])
 async def commands_start(message: types.Message):
+    telegram_id = message.from_user.id
+    username = message.from_user.username
+    # add_user(username, telegram_id)
     await message.answer('Что вы хотите сделать', reply_markup=kb_client)
     await set_all_default_commands(message.bot, message.from_user.id)
 
@@ -49,13 +54,13 @@ async def commands_send_statistics(message: types.Message):
 
 @dp.callback_query_handler(text='email')
 async def send_to_email(callback: types.CallbackQuery):
-    await callback.message.answer('ok')
+    await callback.message.answer('Статистика отправлена на емейл')
     await callback.answer()
 
 
 @dp.callback_query_handler(text='chat')
 async def send_to_chat(callback: types.CallbackQuery):
-    await callback.message.answer('ok')
+    await callback.message.answer('ок')
     await callback.answer()
 
 

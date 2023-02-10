@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 from db_api.models import list_all_categories
 
 
@@ -29,3 +30,17 @@ axis2.set_title('Расходы по категориям')
 
 
 plt.show()
+
+def save_image(filename):
+    p = PdfPages(filename)
+      
+    fig_nums = plt.get_fignums()  
+    figs = [plt.figure(n) for n in fig_nums]
+      
+    for fig in figs: 
+        fig.savefig(p, format='pdf') 
+      
+    p.close()  
+
+
+save_image('graphs.pdf')

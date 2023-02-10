@@ -1,58 +1,38 @@
-import logging
-from pymongo import MongoClient
-from decouple import config
-
-mongo_pwd = config('MONGODB_PWD')
-mongo_user = config('MONGODB_USER')
-
-connection_string = f'mongodb+srv://{mongo_user}:{mongo_pwd}@cluster0.u17j29t.mongodb.net/test'
-
-client = MongoClient(connection_string)
-
-db = client.test
+from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 
-def create_user_collection():
-    user_validator = { 
-        '$jsonSchema': {
-            'bsonType': "object",
-            'title': "User Object Validation",
-            'required': ["id", "name", "telegram_id"],  
-            'properties': {  
-                'name': {
-                    'bsonType': "string",
-                    'description': "'name' must be a string and is required"
-                },
-                'telegram_id': {
-                    'bsonType': "int",
-                    'minimum': 0,
-                    'description': "'telegram_id' must be an integer and is required"
-                },
-                'email': {
-                    'bsonType': 'email',
-                    'description': "'email' must be in a right format if the field exists"
-                },
-            }
-        }
-    }
-    db.create_collection('user')
-    db.command('collMod', 'user', validator=user_validator)
+engine = create_engine('postgresql://postgres:{PASSWORD}@{PORT}/{DATABASE_NAME}')
 
+Base = declarative_base()
 
-def add_user(user_info):
-    collection = db.accountant_bot_collection
-    inserted_id = collection.insert_one(user_info).inserted_id
-    create_user_collection()
-    print(inserted_id)
-
-
-def add_expense(expense):
-    collection = db.accountant_bot_collection
-    inserted_id = collection.insert_one(expense).inserted_id
-    print(inserted_id)
-
-
-def list_all_categories():
-    pass
-
-
+class User(Base):
+    __tablename__ = 'users' 
+    
+    user_id = Column(Integer, primary_key=True) 
+    username = Column(String(255), nullable=False) 
+    telegram_id = Column(Integer, nullable=False)
+    email = Column()
+    expenses = relationship("Expense", back_populates="users")
+    
+    
+class Expense(Base):
+    __tablename__ = 'expenses'
+    
+    expense_id = Column(Integer, primary_key=True)
+    time = Column(DateTime, nullable=False)
+    category_id = Column(Integer, ForeignKey('category.id'))
+    categories = relationship("Category", back_populates="expenses")
+    user_id = Column(Integer, ForeignKey("user.id")) 
+    users = relationship("User", back_populates="expenses")
+    
+class Category(Base):
+    __tablename__ = 'categories'
+    
+    category_id = Column(Integer, primary_key=True)
+    title = Column(String(255), nullable=False)
+    expenses = relationship("Expense", back_populates="categories")
+     
+    
+# Base.metadata.create_all(engine)
