@@ -1,2 +1,2 @@
-from db_api import models
-from db_api import orm_func
+from utils.db_api import models
+from utils.db_api import orm_func

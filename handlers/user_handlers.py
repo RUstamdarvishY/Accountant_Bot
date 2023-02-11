@@ -120,5 +120,5 @@ def register_user_handlers(dp: Dispatcher):
         commands_send_statistics, commands=['Отправить_статистику'])
     dp.register_message_handler(
         commands_list_expenses_categories, commands=['Показать_категории_расходов'])
-    dp.register_callback_query_handler(send_to_email, callback='email')
-    dp.register_callback_query_handler(send_to_chat, callback='chat')
+    dp.register_callback_query_handler(send_to_email)
+    dp.register_callback_query_handler(send_to_chat)

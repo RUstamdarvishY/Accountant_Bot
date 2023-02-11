@@ -6,7 +6,7 @@ from decouple import config
 
 DB_USER = config('DB_USER') 
 DB_PASS = config('DB_PASS') 
-connection_string = 'postgresql://{DB_USER}:{DB_PASS}@localhost/bot_base'
+connection_string = f'postgresql://{DB_USER}:{DB_PASS}@localhost/bot_base'
 
 
 engine = create_engine(connection_string)
