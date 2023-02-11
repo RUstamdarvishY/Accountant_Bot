@@ -8,10 +8,10 @@ DB_USER = config('DB_USER')
 DB_PASS = config('DB_PASS') 
 connection_string = 'postgresql://{DB_USER}:{DB_PASS}@localhost/bot_base'
 
+
 engine = create_engine(connection_string)
 
 Base = declarative_base()
-
 
 class User(Base):
     __tablename__ = 'users'
@@ -44,4 +44,5 @@ class Category(Base):
     expenses = relationship("Expense", back_populates="categories")
 
 
-Base.metadata.create_all(engine)
+def start_database(eng):
+    Base.metadata.create_all(eng)

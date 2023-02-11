@@ -82,13 +82,13 @@ async def commands_send_statistics(message: types.Message):
     
 
 
-@dp.callback_query_handler(text='email')
+# @dp.callback_query_handler(text='email')
 async def send_to_email(callback: types.CallbackQuery):
     await callback.message.answer('Статистика отправлена на емейл')
     await callback.answer()
 
 
-@dp.callback_query_handler(text='chat')
+# @dp.callback_query_handler(text='chat')
 async def send_to_chat(callback: types.CallbackQuery):
     await callback.message.answer(get_expense_stats_for_chat())
     await callback.answer()
@@ -120,5 +120,5 @@ def register_user_handlers(dp: Dispatcher):
         commands_send_statistics, commands=['Отправить_статистику'])
     dp.register_message_handler(
         commands_list_expenses_categories, commands=['Показать_категории_расходов'])
-    dp.register_callback_query_handler(send_to_email)
-    dp.register_callback_query_handler(send_to_chat)
+    dp.register_callback_query_handler(send_to_email, callback='email')
+    dp.register_callback_query_handler(send_to_chat, callback='chat')
