@@ -1,6 +1,7 @@
 import logging
-from aiogram import types
+
 from aiogram.utils import executor
+
 from create_bot import dp, bot
 from handlers import user_handlers
 from states import expenses_states

@@ -1,6 +1,9 @@
-from sqlalchemy.orm import sessionmaker
-from utils.db_api.models import engine, Expense, Category
 from datetime import datetime, timedelta
+
+from sqlalchemy.orm import sessionmaker
+
+from utils.db_api.models import engine, Expense, Category
+
 
 Session = sessionmaker(bind=engine)
 

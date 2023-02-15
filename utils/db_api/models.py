@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+
 from decouple import config
 
 
@@ -20,7 +21,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False)
     telegram_id = Column(Integer, nullable=False)
-    email = Column(String(255))
+    email = Column(String(255), nullable=True)
     expenses = relationship('Expense', backref='user')
 
 
@@ -28,11 +29,11 @@ class Expense(Base):
     __tablename__ = 'expense'
 
     id = Column(Integer, primary_key=True)
-    time = Column(DateTime)
+    time = Column(DateTime, nullable=False)
     price = Column(Float, nullable=False)
     currency = Column(String(20), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    category_id = Column(Integer, ForeignKey('category.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('category.id'), nullable=False)
 
 
 class Category(Base):
