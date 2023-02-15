@@ -1,20 +1,22 @@
 import logging
 from aiogram import types
 from aiogram.utils import executor
-from create_bot import dp
+from create_bot import dp, bot
 from handlers import user_handlers
 from states import expenses_states
-from utils.db_api.models import engine, start_database 
+from handlers.setting_comands import set_all_default_commands
 
 
 async def on_startup(_):
-    start_database(engine)
     print('bot is online')
+
+
+async def commands_menu(bot: bot):
+    await set_all_default_commands(bot)
 
 
 user_handlers.register_user_handlers(dp)
 expenses_states.register_states_handlers(dp)
-
 
 
 async def on_shutdown(_):
