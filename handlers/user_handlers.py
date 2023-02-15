@@ -6,7 +6,7 @@ from aiogram.dispatcher import Dispatcher
 
 from sqlalchemy.orm import sessionmaker
 
-from create_bot import dp, bot
+from create_bot import bot
 from keyboards import kb_client, inline_kb_client
 from utils.db_api.models import engine, User, Category
 from utils.db_api.orm_func import get_expense_stats_for_chat
@@ -20,9 +20,13 @@ async def commands_start(message: types.Message):
     username = message.from_user.username
 
     session = Session()
-    user = User(username=username, telegram_id=telegram_id)
-    session.add(user)
-    session.commit()
+    user_id = session.query(User).filter(
+        User.telegram_id == telegram_id).first()
+
+    if user_id == None:
+        user = User(username=username, telegram_id=telegram_id)
+        session.add(user)
+        session.commit()
 
     await message.answer('Что вы хотите сделать', reply_markup=kb_client)
 
