@@ -1,14 +1,14 @@
 import logging
+from datetime import datetime
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext, Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-
 from sqlalchemy.orm import sessionmaker
 
-from utils.db_api.models import engine, Expense, Category
+from utils.db_api.models import engine, Expense, Category, User
 from keyboards import currency_kb
 
 
@@ -23,7 +23,7 @@ class FSMExpense(StatesGroup):
 
 async def fsm_start(message: types.Message):
     await FSMExpense.price.set()
-    await message.reply('Введите цену')
+    await message.reply('Если хотите отменить ввод, отправьте отмена\nВведите цену')
 
 
 async def get_price(message: types.Message, state: FSMContext):
@@ -44,24 +44,27 @@ async def get_category(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['category'] = message.text
 
-    user_id = message.from_user.id
-
     session = Session()
+
     price = data['price']
     currency = data['currency']
     category = data['category']
 
-    category_id = session.query(Category).filter(
+    find_category = session.query(Category).filter(
         Category.title == category).first()
-    
 
-    if category_id == None:
+    user = session.query(User).filter(
+        User.telegram_id == message.from_user.id).first()
+
+    if find_category == None:
         new_category = Category(title=category)
-        category_id = new_category.id
         session.add(new_category)
+        session.commit()
+        find_category = new_category
 
     expense = Expense(
-        price, currency, category_id=category_id, user_id=user_id)
+        time=datetime.now(), price=price, currency=currency,
+        category_id=find_category.id, user_id=user.id)
 
     session.add(expense)
     session.commit()
