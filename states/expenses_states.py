@@ -1,12 +1,13 @@
 import logging
 
 from aiogram import types
+from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext, Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from utils.db_api.orm_func import send_expense_to_database
-from keyboards import currency_kb
+from keyboards import currency_kb, kb_client
 
 
 class FSMExpense(StatesGroup):
@@ -31,7 +32,7 @@ async def get_currency(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['currency'] = message.text
     await FSMExpense.next()
-    await message.reply('Введите категорию расходов')
+    await message.reply('Введите категорию расходов', reply_markup=ReplyKeyboardRemove())
 
 
 async def get_category(message: types.Message, state: FSMContext):
@@ -45,7 +46,7 @@ async def get_category(message: types.Message, state: FSMContext):
 
     send_expense_to_database(price, currency, category, telegram_id)
 
-    await message.reply('Данные занесены в базу')
+    await message.reply('Данные занесены в базу', reply_markup=kb_client)
     await state.finish()
 
 
@@ -54,7 +55,7 @@ async def cancel(message: types.Message, state: FSMContext):
     if current_state is None:
         return
     await state.finish()
-    await message.reply('Ок')
+    await message.reply('Ок', reply_markup=kb_client)
 
 
 def register_states_handlers(dp: Dispatcher):
