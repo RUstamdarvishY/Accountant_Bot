@@ -39,14 +39,12 @@ async def send_statistics(message: types.Message):
     await message.answer('Отправить', reply_markup=inline_kb_client)
 
 
-async def send_to_email(callback: types.CallbackQuery):
-    await callback.message.answer('Статистика отправлена на емейл')
-    await callback.answer()
+async def statistics_callback(callback: types.CallbackQuery):
+    if callback.data == 'email':
+        await callback.message.answer('Статистика отправлена на емейл')
+    else:
+        await callback.message.answer(get_expense_stats_for_chat())
 
-
-async def send_to_chat(callback: types.CallbackQuery):
-    await callback.message.answer(get_expense_stats_for_chat())
-    await callback.answer()
 
 
 async def list_expenses_categories(message: types.Message):
@@ -69,5 +67,4 @@ def register_user_handlers(dp: Dispatcher):
         send_statistics, commands=['Отправить_статистику'])
     dp.register_message_handler(
         list_expenses_categories, commands=['Показать_категории_расходов'])
-    dp.register_callback_query_handler(send_to_email)
-    dp.register_callback_query_handler(send_to_chat)
+    dp.register_callback_query_handler(statistics_callback)
