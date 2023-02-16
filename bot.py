@@ -5,15 +5,11 @@ from aiogram.utils import executor
 from create_bot import dp, bot
 from handlers import user_handlers
 from states import expenses_states, email_states
-from handlers.setting_comands import set_all_default_commands
+
 
 
 async def on_startup(_):
     print('bot is online')
-
-
-async def commands_menu(bot: bot):
-    await set_all_default_commands(bot)
 
 
 user_handlers.register_user_handlers(dp)
