@@ -35,23 +35,6 @@ async def commands_help(message: types.Message):
     await bot.send_message(message.from_user.id, 'Этот бот может вести учет ваших расходов и высылать статистику в чат или более подробную статистику на емейл, введите комманду /start')
 
 
-async def add_email(message: types.Message):
-    message.reply('Введите емейл')
-    pattern = re.compile(r'[\w.-]+@[\w.]\.(com|ru|by)')
-
-    if not pattern.match(message.text):
-        await message.answer('Емейл неправильно введен')
-
-    user_id = message.from_user.id
-
-    session = Session()
-    user = session.query(User).filter(user_id == user_id).first()
-    user.email = message.text
-    session.commit()
-
-    await message.answer('Емейл добавлен')
-
-
 async def send_statistics(message: types.Message):
     await message.answer('Отправить', reply_markup=inline_kb_client)
 
@@ -82,8 +65,6 @@ def register_user_handlers(dp: Dispatcher):
         commands_start, commands=['start'])
     dp.register_message_handler(
         commands_help, commands=['help'])
-    dp.register_message_handler(
-        add_email, commands=['Добавить_емейл'])
     dp.register_message_handler(
         send_statistics, commands=['Отправить_статистику'])
     dp.register_message_handler(

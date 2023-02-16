@@ -63,7 +63,7 @@ async def cancel(message: types.Message, state: FSMContext):
     await message.reply('Ок', reply_markup=kb_client)
 
 
-def register_states_handlers(dp: Dispatcher):
+def register_expense_states_handlers(dp: Dispatcher):
     dp.register_message_handler(
         fsm_start, commands=['Добавить_расход'], state=None)
     dp.register_message_handler(cancel, state='*', commands=['Отмена'])

@@ -4,7 +4,7 @@ from aiogram.utils import executor
 
 from create_bot import dp, bot
 from handlers import user_handlers
-from states import expenses_states
+from states import expenses_states, email_states
 from handlers.setting_comands import set_all_default_commands
 
 
@@ -17,7 +17,8 @@ async def commands_menu(bot: bot):
 
 
 user_handlers.register_user_handlers(dp)
-expenses_states.register_states_handlers(dp)
+expenses_states.register_expense_states_handlers(dp)
+email_states.register_email_states_handlers(dp)
 
 
 async def on_shutdown(_):

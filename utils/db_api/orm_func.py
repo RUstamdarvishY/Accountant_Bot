@@ -80,3 +80,10 @@ def send_expense_to_database(price, currency, category, telegram_id):
 
     session.add(expense)
     session.commit()
+
+
+def add_email(telegram_id, email):
+    session = Session()
+    user = session.query(User).filter(telegram_id == telegram_id).first()        
+    user.email = email
+    session.commit()
