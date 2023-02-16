@@ -24,8 +24,13 @@ async def fsm_start(message: types.Message):
 async def get_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['price'] = message.text
-    await FSMExpense.next()
-    await message.reply('Введите валюту', reply_markup=currency_kb)
+
+    if message.text.isdigit():
+        await FSMExpense.next()
+        await message.reply('Введите валюту', reply_markup=currency_kb)
+    else:
+        await message.reply('Введено не число')
+        await state.finish()
 
 
 async def get_currency(message: types.Message, state: FSMContext):
