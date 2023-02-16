@@ -1,10 +1,10 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
-button1 = KeyboardButton('/Добавить_емейл')
-button2 = KeyboardButton('/Добавить_расход')
-button3 = KeyboardButton('/Отправить_статистику')
-button4 = KeyboardButton('/Показать_категории_расходов')
+button1 = KeyboardButton('/add_email')
+button2 = KeyboardButton('/add_expense')
+button3 = KeyboardButton('/send_statistics')
+button4 = KeyboardButton('/send_expenses_categories')
 
 kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
 

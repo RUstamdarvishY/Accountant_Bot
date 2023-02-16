@@ -47,7 +47,7 @@ async def cancel(message: types.Message, state: FSMContext):
 
 def register_email_states_handlers(dp: Dispatcher):
     dp.register_message_handler(
-        fsm_start, commands=['Добавить_емейл'], state=None)
+        fsm_start, commands=['add_email'], state=None)
     dp.register_message_handler(cancel, state='*', commands=['Отмена'])
     dp.register_message_handler(cancel, Text(equals='Отмена',
                                              ignore_case=True), state='*')

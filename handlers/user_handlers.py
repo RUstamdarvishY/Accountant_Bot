@@ -64,7 +64,7 @@ def register_user_handlers(dp: Dispatcher):
     dp.register_message_handler(
         commands_help, commands=['help'])
     dp.register_message_handler(
-        send_statistics, commands=['Отправить_статистику'])
+        send_statistics, commands=['send_statistics'])
     dp.register_message_handler(
-        list_expenses_categories, commands=['Показать_категории_расходов'])
+        list_expenses_categories, commands=['send_expenses_categories'])
     dp.register_callback_query_handler(statistics_callback)

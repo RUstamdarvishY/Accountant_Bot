@@ -2,7 +2,7 @@ import logging
 
 from aiogram.utils import executor
 
-from create_bot import dp, bot
+from create_bot import dp
 from handlers import user_handlers
 from states import expenses_states, email_states
 
