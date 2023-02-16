@@ -1,18 +1,12 @@
 import logging
-from datetime import datetime
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext, Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from sqlalchemy.orm import sessionmaker
-
-from utils.db_api.models import engine, Expense, Category, User
+from utils.db_api.orm_func import send_expense_to_database
 from keyboards import currency_kb
-
-
-Session = sessionmaker(bind=engine)
 
 
 class FSMExpense(StatesGroup):
@@ -44,30 +38,12 @@ async def get_category(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['category'] = message.text
 
-    session = Session()
-
+    telegram_id = message.from_user.id
     price = data['price']
     currency = data['currency']
     category = data['category']
 
-    find_category = session.query(Category).filter(
-        Category.title == category).first()
-
-    user = session.query(User).filter(
-        User.telegram_id == message.from_user.id).first()
-
-    if find_category == None:
-        new_category = Category(title=category)
-        session.add(new_category)
-        session.commit()
-        find_category = new_category
-
-    expense = Expense(
-        time=datetime.now(), price=price, currency=currency,
-        category_id=find_category.id, user_id=user.id)
-
-    session.add(expense)
-    session.commit()
+    send_expense_to_database(price, currency, category, telegram_id)
 
     await message.reply('Данные занесены в базу')
     await state.finish()
