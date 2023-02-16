@@ -67,14 +67,14 @@ async def send_to_chat(callback: types.CallbackQuery):
 
 
 async def list_expenses_categories(message: types.Message):
-    message = ''
+    msg = ''
     session = Session()
     categories = session.query(Category)
 
     for index, category in enumerate(categories):
-        message += f'category №{index}: {category.title}\n'
+        msg += f'категория №{index+1}: {category.title}\n'
 
-    await message.answer(message)
+    await message.reply(msg)
 
 
 def register_user_handlers(dp: Dispatcher):
