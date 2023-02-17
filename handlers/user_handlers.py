@@ -1,6 +1,3 @@
-import logging
-import re
-
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
 

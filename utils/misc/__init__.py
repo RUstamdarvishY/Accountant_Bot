@@ -1,3 +1,3 @@
-from misc import celery
-from misc import plot
-from misc import currency
+from utils.misc import celery
+from utils.misc import plots
+from utils.misc import currency

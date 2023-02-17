@@ -1,46 +1,45 @@
-from matplotlib import pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-from db_api.models import list_all_categories
+# from matplotlib import pyplot as plt
+# from matplotlib.backends.backend_pdf import PdfPages
 
 
-plt.style.use('ggplot')
+# plt.style.use('ggplot')
 
-x1 = [i for i in list_all_categories('expense')]
-y1 = [i for i in list_all_categories('time')]
+# x1 = [i for i in list_all_categories('expense')]
+# y1 = [i for i in list_all_categories('time')]
 
-slices = [i for i in list_all_categories('expense')]
-labels = [i for i in list_all_categories['name']]
-
-
-fig1, axis1 = plt.subplots(nrows=1, ncols=1)
-fig2, axis2 = plt.subplots(nrows=1, ncols=1)
+# slices = [i for i in list_all_categories('expense')]
+# labels = [i for i in list_all_categories['name']]
 
 
-axis1.plot(x1, y1, linewidth=3, label='')
-axis1.legend()
-axis1.set_title('Расходы на временной линии')
-axis1.set_xlabel('Расходы')
-axis1.set_ylabel('Время')
+# fig1, axis1 = plt.subplots(nrows=1, ncols=1)
+# fig2, axis2 = plt.subplots(nrows=1, ncols=1)
 
 
-axis2.pie(slices, labels=labels, wedgeprops={'edgecolor': 'black'},
-          shadow=True, autopct='%1.1f%%')
-axis2.legend()
-axis2.set_title('Расходы по категориям')
+# axis1.plot(x1, y1, linewidth=3, label='')
+# axis1.legend()
+# axis1.set_title('Расходы на временной линии')
+# axis1.set_xlabel('Расходы')
+# axis1.set_ylabel('Время')
 
 
-plt.show()
+# axis2.pie(slices, labels=labels, wedgeprops={'edgecolor': 'black'},
+#           shadow=True, autopct='%1.1f%%')
+# axis2.legend()
+# axis2.set_title('Расходы по категориям')
 
-def save_plots(filename):
-    p = PdfPages(filename)
+
+# plt.show()
+
+# def save_plots(filename):
+#     p = PdfPages(filename)
       
-    fig_nums = plt.get_fignums()  
-    figs = [plt.figure(n) for n in fig_nums]
+#     fig_nums = plt.get_fignums()  
+#     figs = [plt.figure(n) for n in fig_nums]
       
-    for fig in figs: 
-        fig.savefig(p, format='pdf') 
+#     for fig in figs: 
+#         fig.savefig(p, format='pdf') 
       
-    p.close()  
+#     p.close()  
 
 
-save_plots('graphs.pdf')
+# save_plots('graphs.pdf')
