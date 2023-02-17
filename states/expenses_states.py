@@ -5,6 +5,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from utils.db_api.orm_func import send_expense_to_database
+from utils.misc import rate_limit
 from keyboards import currency_kb, kb_client
 
 
@@ -14,6 +15,7 @@ class FSMExpense(StatesGroup):
     category = State()
 
 
+@rate_limit(limit=7, key='/add_expense')
 async def fsm_start(message: types.Message):
     await FSMExpense.price.set()
     await message.reply('Если хотите отменить ввод, отправьте отмена\nВведите цену')

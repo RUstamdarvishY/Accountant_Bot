@@ -6,12 +6,14 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 
 from utils.db_api.orm_func import add_email
+from utils.misc import rate_limit
 
 
 class FSMEmail(StatesGroup):
     email = State()
 
 
+@rate_limit(limit=7, key='/add_email')
 async def fsm_start(message: types.Message):
     await FSMEmail.email.set()
     await message.reply('Если хотите отменить ввод, отправьте отмена\nВведите емейл')
