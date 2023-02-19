@@ -12,49 +12,64 @@ Session = sessionmaker(bind=engine)
 
 def get_expense_stats_for_chat() -> str:
     session = Session()
-    expenses = session.query(Expense)
+    expenses = session.query(Expense.price)
 
-    expenses_for_one_day = sum(expenses.filter(
+    time_filter_day = expenses.filter(
         Expense.time > datetime.now() - timedelta(days=1),
-        Expense.time < datetime.now()).only(Expense.price))
+        Expense.time < datetime.now())
 
-    category_id1 = session.query(Expense).\
-        filter(Expense.time > datetime.now() - timedelta(days=1),
-               Expense.time < datetime.now()).\
-        order_by(Expense.price).limit(1).only(Expense.category_id)
+    expenses_for_one_day = sum([i[0] for i in time_filter_day])
 
-    category_with_most_expenses_day = session.query(
-        Category).filter(Category.id == category_id1).only(Category.title)
+    if expenses_for_one_day > 0:
+        category_filter_day = session.query(Expense.category_id).\
+            filter(Expense.time > datetime.now() - timedelta(days=1),
+                   Expense.time < datetime.now()).\
+            order_by(Expense.price)
 
-    expenses_for_one_week = sum(expenses.filter(
+        category_with_most_expenses_day = session.query(
+            Category.title).filter(Category.id == category_filter_day[0][0])
+
+        message1 = f'за последние 24 часа вы потратили {expenses_for_one_day}, категория с наибольшими расходами - {category_with_most_expenses_day[0][0]}\n'
+    else:
+        message1 = 'за последние 24 вы ничего не потратили\n'
+
+    time_filter_week = expenses.filter(
         Expense.time > datetime.now() - timedelta(days=7),
-        Expense.time < datetime.now()).only(Expense.price))
+        Expense.time < datetime.now())
 
-    category_id2 = session.query(Expense).\
-        filter(Expense.time > datetime.now() - timedelta(days=7),
-               Expense.time < datetime.now()).\
-        order_by(Expense.price).limit(1).only(Expense.category_id)
+    expenses_for_one_week = sum([i[0] for i in time_filter_week])
 
-    category_with_most_expenses_week = session.query(Category).filter(
-        Category.id == category_id2).only(Category.title)
+    if expenses_for_one_week > 0:
+        category_filter_week = session.query(Expense.category_id).\
+            filter(Expense.time > datetime.now() - timedelta(days=7),
+                   Expense.time < datetime.now()).\
+            order_by(Expense.price)
 
-    expenses_for_one_month = sum(expenses.filter(
+        category_with_most_expenses_week = session.query(
+            Category.title).filter(Category.id == category_filter_week[0][0])
+
+        message2 = f'за последнюю неделю вы потратили {expenses_for_one_week}, категория с наибольшими расходами - {category_with_most_expenses_week[0][0]}\n'
+    else:
+        message2 = 'за последнюю неделю вы ничего не потратили\n'
+
+    time_filter_month = expenses.filter(
         Expense.time > datetime.now() - timedelta(days=30),
-        Expense.time < datetime.now()).only(Expense.price))
+        Expense.time < datetime.now())
 
-    category_id3 = session.query(Expense).\
-        filter(Expense.time > datetime.now() - timedelta(days=30),
-               Expense.time < datetime.now()).\
-        order_by(Expense.price).limit(1).only(Expense.category_id)
+    expenses_for_one_month = sum([i[0] for i in time_filter_month])
 
-    category_with_most_expenses_month = session.query(Category).filter(
-        Category.id == category_id3).only(Category.title)
+    if expenses_for_one_month > 0:
+        category_filter_month = session.query(Expense.category_id).\
+            filter(Expense.time > datetime.now() - timedelta(days=30),
+                   Expense.time < datetime.now()).\
+            order_by(Expense.price)
 
-    message1 = f'за последние 24 часа вы потратили {expenses_for_one_day}, категория с наибольшими расходами - {category_with_most_expenses_day}\n'
+        category_with_most_expenses_month = session.query(
+            Category.title).filter(Category.id == category_filter_month[0][0])
 
-    message2 = f'за последнюю неделю вы потратили {expenses_for_one_week}, категория с наибольшими расходами - {category_with_most_expenses_week}\n'
-
-    message3 = f'за последний месяц вы потратили {expenses_for_one_month}, категория с наибольшими расходами - {category_with_most_expenses_month}'
+        message3 = f'за последний месяц вы потратили {expenses_for_one_month}, категория с наибольшими расходами - {category_with_most_expenses_month[0][0]}'
+    else:
+        message3 = 'за последний месяц вы ничего не потратили'
 
     return message1 + message2 + message3
 
@@ -84,6 +99,20 @@ def send_expense_to_database(price, currency, category, telegram_id):
 
 def add_email(telegram_id, email):
     session = Session()
-    user = session.query(User).filter(telegram_id == telegram_id).first()        
+    user = session.query(User).filter(telegram_id == telegram_id).first()
     user.email = email
     session.commit()
+
+
+def list_categories():
+    session = Session()
+    categories = session.query(Category.title)
+
+    return categories
+
+
+def list_expenses():
+    session = Session()
+    expenses = session.query(Expense.price, Expense.time)
+
+    return expenses

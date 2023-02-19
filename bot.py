@@ -5,7 +5,6 @@ from handlers import user_handlers
 from states import expenses_states, email_states
 
 
-
 async def on_startup(_):
     import middlewares
     middlewares.setup(dp)
