@@ -1,25 +1,31 @@
-# from matplotlib import pyplot as plt
-# from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib import dates as dt
+from utils.db_api.orm_func import list_categories, list_expenses_price, list_expenses_time, list_categories_partition
 
 
-# plt.style.use('ggplot')
+plt.style.use('ggplot')
 
-# x1 = [i for i in list_all_categories('expense')]
-# y1 = [i for i in list_all_categories('time')]
-
-# slices = [i for i in list_all_categories('expense')]
-# labels = [i for i in list_all_categories['name']]
+x1 = list_expenses_time()
+y1 = list_expenses_price()
 
 
-# fig1, axis1 = plt.subplots(nrows=1, ncols=1)
+# slices = list_categories_partition()
+# labels = list_categories()
+
+
+fig1, axis1 = plt.subplots(nrows=1, ncols=1)
 # fig2, axis2 = plt.subplots(nrows=1, ncols=1)
 
 
-# axis1.plot(x1, y1, linewidth=3, label='')
-# axis1.legend()
-# axis1.set_title('Расходы на временной линии')
-# axis1.set_xlabel('Расходы')
-# axis1.set_ylabel('Время')
+axis1.plot(x1, y1, linewidth=3)
+axis1.set_title('Расходы на временной линии')
+axis1.set_xlabel('Расходы')
+axis1.set_ylabel('Время')
+
+fig1.autofmt_xdate()
+date_formatter = axis1.fmt_xdata = dt.DateFormatter('%m-%d')
+axis1.xaxis.set_major_formatter(date_formatter)
 
 
 # axis2.pie(slices, labels=labels, wedgeprops={'edgecolor': 'black'},
@@ -30,16 +36,17 @@
 
 # plt.show()
 
-# def save_plots(filename):
-#     p = PdfPages(filename)
-      
-#     fig_nums = plt.get_fignums()  
-#     figs = [plt.figure(n) for n in fig_nums]
-      
-#     for fig in figs: 
-#         fig.savefig(p, format='pdf') 
-      
-#     p.close()  
+
+def save_plots(filename):
+    p = PdfPages(filename)
+
+    fig_nums = plt.get_fignums()
+    figs = [plt.figure(n) for n in fig_nums]
+
+    for fig in figs:
+        fig.savefig(p, format='pdf')
+
+    p.close()
 
 
 # save_plots('graphs.pdf')

@@ -74,15 +74,34 @@ def add_email(telegram_id, email):
     session.commit()
 
 
+def get_email(telegram_id):
+    session = Session()
+    user = session.query(User).filter(telegram_id == telegram_id).first()
+
+    return user.email
+
+
 def list_categories():
     session = Session()
     categories = session.query(Category.title)
 
-    return categories
+    return [i[0] for i in categories]
 
 
-def list_expenses():
+def list_categories_partition():
+    pass
+# посчитать суммы расходов для каждой категории
+
+
+def list_expenses_price():
     session = Session()
-    expenses = session.query(Expense.price, Expense.time)
+    expenses = session.query(Expense.price)
 
-    return expenses
+    return [i[0] for i in expenses]
+
+
+def list_expenses_time():
+    session = Session()
+    expenses = session.query(Expense.time)
+
+    return [i[0] for i in expenses]
