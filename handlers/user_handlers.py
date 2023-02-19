@@ -8,6 +8,7 @@ from keyboards import kb_client, inline_kb_client
 from utils.db_api.models import engine, User, Category
 from utils.db_api.orm_func import get_expense_stats_for_chat
 from utils.misc import rate_limit
+from utils.misc.plots import save_plots 
 
 
 Session = sessionmaker(bind=engine)
