@@ -44,7 +44,7 @@ async def statistics_callback(callback: types.CallbackQuery):
     if callback.data == 'email':
         await callback.message.answer('Статистика отправлена на емейл')
     else:
-        await callback.message.answer(get_expense_stats_for_chat())
+        await callback.message.answer(get_expense_stats_for_chat(1) + get_expense_stats_for_chat(7) + get_expense_stats_for_chat(30))
 
 
 @rate_limit(limit=7, key='/send_expenses_categories')
