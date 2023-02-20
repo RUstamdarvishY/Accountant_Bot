@@ -97,21 +97,24 @@ def list_categories_partition():
     expense_by_category_list = [i[0] for i in session.query(
         Expense.category_id).order_by(Expense.category_id)]
 
+    last_expense_category = [i[0] for i in session.query(Expense.price).filter(
+        Expense.category_id == expense_by_category_list[-1])]
+
     temp_sum = []
     partition_list = []
 
-    for i in range(1, len(expense_by_category_list)):
-        if expense_by_category_list[i-1] == expense_by_category_list[i]:
-            temp_sum.append(expense_by_price_list[i-1])
+    for i in range(0, len(expense_by_category_list)-1):
+        if expense_by_category_list[i] == expense_by_category_list[i+1]:
+            temp_sum.append(expense_by_price_list[i])
         else:
-            temp_sum.append(expense_by_price_list[i-1])
+            temp_sum.append(expense_by_price_list[i])
             res = sum(temp_sum)
             temp_sum = []
             partition_list.append(res)
-            print(partition_list)
 
+    partition_list.append(sum(last_expense_category))
 
-list_categories_partition()
+    return partition_list
 
 
 def list_expenses_price():
