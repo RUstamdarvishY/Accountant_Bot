@@ -89,8 +89,29 @@ def list_categories():
 
 
 def list_categories_partition():
-    pass
-# посчитать суммы расходов для каждой категории
+    session = Session()
+
+    expense_by_price_list = [i[0] for i in session.query(
+        Expense.price).order_by(Expense.category_id)]
+
+    expense_by_category_list = [i[0] for i in session.query(
+        Expense.category_id).order_by(Expense.category_id)]
+
+    temp_sum = []
+    partition_list = []
+
+    for i in range(1, len(expense_by_category_list)):
+        if expense_by_category_list[i-1] == expense_by_category_list[i]:
+            temp_sum.append(expense_by_price_list[i-1])
+        else:
+            temp_sum.append(expense_by_price_list[i-1])
+            res = sum(temp_sum)
+            temp_sum = []
+            partition_list.append(res)
+            print(partition_list)
+
+
+list_categories_partition()
 
 
 def list_expenses_price():
