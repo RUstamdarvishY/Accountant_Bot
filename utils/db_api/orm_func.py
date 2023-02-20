@@ -83,7 +83,7 @@ def get_email(telegram_id):
 
 def list_categories():
     session = Session()
-    categories = session.query(Category.title)
+    categories = session.query(Category.title).order_by(Category.id)
 
     return [i[0] for i in categories]
 
@@ -98,21 +98,21 @@ def list_categories_partition():
         Expense.category_id).order_by(Expense.category_id)]
 
     last_expense_category = [i[0] for i in session.query(Expense.price).filter(
-        Expense.category_id == expense_by_category_list[-1])]
+        Expense.category_id == expense_by_category_list[-1])]  # расходы для последней категории
 
     temp_sum = []
     partition_list = []
 
     for i in range(0, len(expense_by_category_list)-1):
-        if expense_by_category_list[i] == expense_by_category_list[i+1]:
-            temp_sum.append(expense_by_price_list[i])
+        if expense_by_category_list[i] == expense_by_category_list[i+1]: 
+            temp_sum.append(expense_by_price_list[i]) # сравниваем расходы по категориям и добавляем одинаковые в список
         else:
             temp_sum.append(expense_by_price_list[i])
             res = sum(temp_sum)
-            temp_sum = []
-            partition_list.append(res)
+            temp_sum = [] # очищаем список с расходами для одной категории
+            partition_list.append(res) # добавляем сумму расходов для одной категории в финальный список
 
-    partition_list.append(sum(last_expense_category))
+    partition_list.append(sum(last_expense_category)) # отдельно добавляем сумму расходов для последней категории (не смог сделать в лупе из-зи ошибок)
 
     return partition_list
 

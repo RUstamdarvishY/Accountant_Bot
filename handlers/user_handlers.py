@@ -8,7 +8,7 @@ from keyboards import kb_client, inline_kb_client
 from utils.db_api.models import engine, User, Category
 from utils.db_api.orm_func import get_expense_stats_for_chat
 from utils.misc import rate_limit
-from utils.misc.plots import save_plots 
+from utils.misc.plots import save_plots
 
 
 Session = sessionmaker(bind=engine)
@@ -43,6 +43,7 @@ async def send_statistics(message: types.Message):
 
 async def statistics_callback(callback: types.CallbackQuery):
     if callback.data == 'email':
+        save_plots(f'graphs.pdf')
         await callback.message.answer('Статистика отправлена на емейл')
     else:
         await callback.message.answer(get_expense_stats_for_chat(1) + get_expense_stats_for_chat(7) + get_expense_stats_for_chat(30))
