@@ -1,25 +1,33 @@
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.text import MIMEText
-# from email.mime.image import MIMEImage
-# from pathlib import Path
-# import smtplib
+from email.message import EmailMessage
+import smtplib
 
-# from utils.db_api.orm_func import get_email
+from decouple import config
 
 
-# subject = ''
+def send_email(reciever):
+    email_user = config('EMAIL_USER')
+    email_password = config('EMAIL_PASSWORD')
+    body = 'Расходы за промежуток времени с графиками'
+
+    msg = EmailMessage()
+    msg['subject'] = "Ваши расходы"
+    msg['From'] = email_user
+    msg['To'] = reciever
+    msg.set_content(body)
+
+    with open('/home/rustam/Coding/Python/Accountant_bot/graphs.pdf', 'rb') as f:
+        file_data = f.read()
+        file_name = f.name
+
+    msg.add_attachment(file_data, maintype='application',
+                       subtype='octet-stream', filename=file_name)
 
 
-# message = MIMEMultipart()
-# message['from'] = 'Accountant Bot'
-# message['to'] = get_email()
-# message['subject'] = 'Ваши расходы'
-# message.attach(MIMEText(subject, 'plain'))
-# message.attach(MIMEImage(Path('graphs.pdf').read_bytes))
+    with smtplib.SMTP(host='smtp.gmail.com', port=587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
 
+        smtp.login(email_user, email_password)
 
-# with smtplib.SMTP(host='smtp.gmail.com', port=587) as smtp:
-#     smtp.ehlo()
-#     smtp.starttls()
-#     smtp.loggin('test_user@gmail.com', 'password')
-#     smtp.send_message(message)
+        smtp.send_message(msg)

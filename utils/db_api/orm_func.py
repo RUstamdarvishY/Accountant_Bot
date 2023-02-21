@@ -74,13 +74,6 @@ def add_email(telegram_id, email):
     session.commit()
 
 
-def get_email(telegram_id):
-    session = Session()
-    user = session.query(User).filter(telegram_id == telegram_id).first()
-
-    return user.email
-
-
 def list_categories():
     session = Session()
     categories = session.query(Category.title).order_by(Category.id)
@@ -104,15 +97,18 @@ def list_categories_partition():
     partition_list = []
 
     for i in range(0, len(expense_by_category_list)-1):
-        if expense_by_category_list[i] == expense_by_category_list[i+1]: 
-            temp_sum.append(expense_by_price_list[i]) # сравниваем расходы по категориям и добавляем одинаковые в список
+        if expense_by_category_list[i] == expense_by_category_list[i+1]:
+            # сравниваем расходы по категориям и добавляем одинаковые в список
+            temp_sum.append(expense_by_price_list[i])
         else:
             temp_sum.append(expense_by_price_list[i])
             res = sum(temp_sum)
-            temp_sum = [] # очищаем список с расходами для одной категории
-            partition_list.append(res) # добавляем сумму расходов для одной категории в финальный список
+            temp_sum = []  # очищаем список с расходами для одной категории
+            # добавляем сумму расходов для одной категории в финальный список
+            partition_list.append(res)
 
-    partition_list.append(sum(last_expense_category)) # отдельно добавляем сумму расходов для последней категории (не смог сделать в лупе из-зи ошибок)
+    # отдельно добавляем сумму расходов для последней категории (не смог сделать в лупе из-зи ошибок)
+    partition_list.append(sum(last_expense_category))
 
     return partition_list
 

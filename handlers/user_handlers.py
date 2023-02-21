@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
 
@@ -9,6 +11,7 @@ from utils.db_api.models import engine, User, Category
 from utils.db_api.orm_func import get_expense_stats_for_chat
 from utils.misc import rate_limit
 from utils.misc.plots import save_plots
+from utils.misc.mail import send_email
 
 
 Session = sessionmaker(bind=engine)
@@ -42,8 +45,23 @@ async def send_statistics(message: types.Message):
 
 
 async def statistics_callback(callback: types.CallbackQuery):
+    telegram_id = callback.from_user.id
+
     if callback.data == 'email':
+        plot = Path('/home/rustam/Coding/Python/Accountant_bot/graphs.pdf')
+        if plot.is_file():
+            plot.unlink()
         save_plots(f'graphs.pdf')
+
+        session = Session()
+        user_email = session.query(User.email).filter(
+            User.telegram_id == telegram_id).first()
+
+        if user_email:
+            send_email(user_email[0])
+        else:
+            await callback.message.answer('Не указан емейл') 
+            
         await callback.message.answer('Статистика отправлена на емейл')
     else:
         await callback.message.answer(get_expense_stats_for_chat(1) + get_expense_stats_for_chat(7) + get_expense_stats_for_chat(30))

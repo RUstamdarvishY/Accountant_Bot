@@ -30,7 +30,7 @@ axis1.xaxis.set_major_formatter(date_formatter)
 
 axis2.pie(slices, labels=labels, wedgeprops={'edgecolor': 'black'},
           autopct='%1.1f%%')
-axis2.set_title('Расходы по категориям2')
+axis2.set_title('Расходы по категориям')
 
 
 def save_plots(filename):
