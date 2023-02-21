@@ -17,11 +17,10 @@ def send_email(reciever):
 
     with open('/home/rustam/Coding/Python/Accountant_bot/graphs.pdf', 'rb') as f:
         file_data = f.read()
-        file_name = f.name
+        file_name = f.name[-10:]  # graphs.pdf
 
     msg.add_attachment(file_data, maintype='application',
                        subtype='octet-stream', filename=file_name)
-
 
     with smtplib.SMTP(host='smtp.gmail.com', port=587) as smtp:
         smtp.ehlo()

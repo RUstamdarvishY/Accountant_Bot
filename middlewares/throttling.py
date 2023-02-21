@@ -40,7 +40,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         else:
             key = f"{self.prefix}_message"
         delta = throttled.rate - throttled.delta
-        if throttled.exceeded_count <= 2:
+        if throttled.exceeded_count <= 3:
             await message.reply('Слишком много запросов')
         await asyncio.sleep(delta)
 

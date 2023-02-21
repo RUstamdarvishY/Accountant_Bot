@@ -43,4 +43,3 @@ def save_plots(filename):
         fig.savefig(p, format='pdf')
 
     p.close()
-
