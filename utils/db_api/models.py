@@ -1,13 +1,10 @@
 from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+import os
 
-from decouple import config
 
-
-DB_USER = config('DB_USER')
-DB_PASS = config('DB_PASS')
-connection_string = f'postgresql://{DB_USER}:{DB_PASS}@localhost/bot_base'
+connection_string = os.environ.get('CLEARDB_DATABASE_URL') 
 
 
 engine = create_engine(connection_string)
@@ -41,7 +38,6 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(255), nullable=False)
     expenses = relationship('Expense', backref='category')
-
 
 
 Base.metadata.create_all(engine)
