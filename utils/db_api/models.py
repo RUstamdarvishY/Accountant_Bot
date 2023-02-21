@@ -31,7 +31,6 @@ class Expense(Base):
     id = Column(Integer, primary_key=True)
     time = Column(DateTime, nullable=False)
     price = Column(Float, nullable=False)
-    currency = Column(String(20), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('category.id'), nullable=False)
 

@@ -44,7 +44,7 @@ def get_expense_stats_for_chat(timeframe: int) -> str:
     return message
 
 
-def send_expense_to_database(price, currency, category, telegram_id):
+def send_expense_to_database(price, category, telegram_id):
     session = Session()
 
     find_category = session.query(Category).filter(
@@ -60,7 +60,7 @@ def send_expense_to_database(price, currency, category, telegram_id):
         find_category = new_category
 
     expense = Expense(
-        time=datetime.now(), price=price, currency=currency,
+        time=datetime.now(), price=price,
         category_id=find_category.id, user_id=user.id)
 
     session.add(expense)
@@ -83,34 +83,37 @@ def list_categories():
 
 def list_categories_partition():
     session = Session()
+    
+    if session.query(Expense).count() > 0:
 
-    expense_by_price_list = [i[0] for i in session.query(
-        Expense.price).order_by(Expense.category_id)]
+        expense_by_price_list = [i[0] for i in session.query(
+            Expense.price).order_by(Expense.category_id)]
 
-    expense_by_category_list = [i[0] for i in session.query(
-        Expense.category_id).order_by(Expense.category_id)]
+        expense_by_category_list = [i[0] for i in session.query(
+            Expense.category_id).order_by(Expense.category_id)]
 
-    last_expense_category = [i[0] for i in session.query(Expense.price).filter(
-        Expense.category_id == expense_by_category_list[-1])]  # расходы для последней категории
+        last_expense_category = [i[0] for i in session.query(Expense.price).filter(
+            Expense.category_id == expense_by_category_list[-1])]  # расходы для последней категории
 
-    temp_sum = []
-    partition_list = []
+        temp_sum = []
+        partition_list = []
 
-    for i in range(0, len(expense_by_category_list)-1):
-        if expense_by_category_list[i] == expense_by_category_list[i+1]:
-            # сравниваем расходы по категориям и добавляем одинаковые в список
-            temp_sum.append(expense_by_price_list[i])
-        else:
-            temp_sum.append(expense_by_price_list[i])
-            res = sum(temp_sum)
-            temp_sum = []  # очищаем список с расходами для одной категории
-            # добавляем сумму расходов для одной категории в финальный список
-            partition_list.append(res)
+        for i in range(0, len(expense_by_category_list)-1):
+            if expense_by_category_list[i] == expense_by_category_list[i+1]:
+                # сравниваем расходы по категориям и добавляем одинаковые в список
+                temp_sum.append(expense_by_price_list[i])
+            else:
+                temp_sum.append(expense_by_price_list[i])
+                res = sum(temp_sum)
+                temp_sum = []  # очищаем список с расходами для одной категории
+                # добавляем сумму расходов для одной категории в финальный список
+                partition_list.append(res)
 
-    # отдельно добавляем сумму расходов для последней категории (не смог сделать в лупе из-зи ошибок)
-    partition_list.append(sum(last_expense_category))
+        # отдельно добавляем сумму расходов для последней категории (не смог сделать в лупе из-за ошибок)
+        partition_list.append(sum(last_expense_category))
 
-    return partition_list
+        return partition_list
+    return [i for i in session.query(Category)]
 
 
 def list_expenses_price():
