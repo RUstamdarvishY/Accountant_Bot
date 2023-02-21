@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 from create_bot import bot
 from keyboards import kb_client, inline_kb_client
-from utils.db_api.models import engine, User, Category
+from utils.db_api.models import engine, User, Category, Expense
 from utils.db_api.orm_func import get_expense_stats_for_chat
 from utils.misc import rate_limit
 from utils.misc.plots import save_plots
@@ -41,7 +41,11 @@ async def commands_help(message: types.Message):
 
 @rate_limit(limit=7, key='/send_statistics')
 async def send_statistics(message: types.Message):
-    await message.answer('Отправить', reply_markup=inline_kb_client)
+    session = Session()
+    if session.query(Expense).count() > 0:
+        await message.answer('Отправить', reply_markup=inline_kb_client)
+    else:
+        await message.answer('Нет расходов')
 
 
 async def statistics_callback(callback: types.CallbackQuery):
@@ -60,8 +64,8 @@ async def statistics_callback(callback: types.CallbackQuery):
         if user_email:
             send_email(user_email[0])
         else:
-            await callback.message.answer('Не указан емейл') 
-            
+            await callback.message.answer('Не указан емейл')
+
         await callback.message.answer('Статистика отправлена на емейл')
     else:
         await callback.message.answer(get_expense_stats_for_chat(1) + get_expense_stats_for_chat(7) + get_expense_stats_for_chat(30))
@@ -75,8 +79,11 @@ async def list_expenses_categories(message: types.Message):
 
     for index, category in enumerate(categories):
         msg += f'категория №{index+1}: {category.title}\n'
-
-    await message.reply(msg)
+        
+    if msg:
+        await message.reply(msg)
+    else: 
+        await message.reply('Нет категорий')
 
 
 def register_user_handlers(dp: Dispatcher):
