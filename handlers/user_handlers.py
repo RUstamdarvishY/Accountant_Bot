@@ -52,8 +52,9 @@ async def statistics_callback(callback: types.CallbackQuery):
     telegram_id = callback.from_user.id
 
     if callback.data == 'email':
-        plot = Path(Path.absolute() + 'graphs.pdf')
+        plot = Path(Path.absolute('graphs.pdf'))
         print(Path.absolute())
+        print('!!!!!!!!!!!!!!!!!!')
         if plot.is_file():
             plot.unlink()
         save_plots(f'graphs.pdf')
