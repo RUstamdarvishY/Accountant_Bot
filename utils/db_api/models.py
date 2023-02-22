@@ -1,11 +1,12 @@
 from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-import os
+
+from decouple import config
 
 
-connection_string = os.environ.get('CLEARDB_DATABASE_URL') 
-
+connection_string = config('CLEARDB_DATABASE_URL') 
+print(config('CLEARDB_DATABASE_URL'))
 
 engine = create_engine(connection_string)
 
