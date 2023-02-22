@@ -6,7 +6,6 @@ from decouple import config
 
 
 connection_string = config('CLEARDB_DATABASE_URL') 
-print(config('CLEARDB_DATABASE_URL'))
 
 engine = create_engine(connection_string)
 

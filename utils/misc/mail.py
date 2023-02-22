@@ -16,7 +16,7 @@ def send_email(reciever):
     msg['To'] = reciever
     msg.set_content(body)
 
-    with open(Path('graphs.pdf').absolute() + 'rb') as f:
+    with open(Path('graphs.pdf').absolute(), 'rb') as f:
         file_data = f.read()
         file_name = f.name[-10:]  # graphs.pdf
 
